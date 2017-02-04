@@ -211,9 +211,9 @@ Finall touch when we call method we have to put 'this' before, and we call prope
         return null;
       }
 ```
-Rigth now it should just work but it present no interest as we render the dom in constructor. You should instead when using react use render method, which does exactly the same thing. To Achieve this we will need some futher modification.
+Right now it should just work but it present no interest as we render the dom in constructor. You should instead, when using react use render method, which does exactly the same thing. To Achieve this we will need some futher modification.
 
-Instead of just mutate state like we does react ways recommend to use setState method
+Instead of just mutate state like we did before,  react ways recommend to use setState method
 
 ```javascript
 // instead of that
@@ -222,3 +222,74 @@ Instead of just mutate state like we does react ways recommend to use setState m
    this.setState({ hole: index });
 
 ```
+Render methodd does exactly what our draw function did but it use jsx which allow us to have a beautiful html like syntax.
+
+```javascript
+  render() {
+    return <div>Like true html</div>
+  }
+```
+How was our draw was worked ?
+
+```javascript
+//first create div element
+var box = document.body.appendChild(document.createElement('div'));
+//then thre draw function append the other div in loop
+function draw() {
+  for (var i = 0, tile; tile = box.childNodes[i], i < 16; i++) {
+    tile.textContent = this.order[i]; tile.style.visibility = this.order[i]? 'visible' : 'hidden'; } };
+```
+
+Let's do the same with jsx
+
+```javascript
+render() {
+  //() => is an arrow function , with this i can simply return without use 'return' keyword
+  const renderBoxContent = () => this.state.order.map(order => {
+    //we do exactly the same things draw function,  we loop over an array an generate div
+
+    if (order) return <div className="tile" key={order}> {order} </div>;
+    //we handle condition without ternary like before but with a simple if
+    return <div className="tile hidden" key={order}> {order} </div>;
+  })
+
+ //then we append our nodes in the 'box' div
+
+ return (
+    <div className="box">
+      {renderBoxContent()}
+    </div>
+  );
+}
+```
+On last thing listener should be attached after dom load, react provide some lifecycle Hooks method for that
+```javascript
+componentDidMount() {
+  window.addEventListener('keydown', e => {
+    if (
+      this.go(
+        this.state.Move[({
+          39: 'left',
+          37: 'right',
+          40: 'up',
+          38: 'down',
+        })[e.keyCode]],
+      )
+    ) {
+      //draw()
+      //this.render();
+      if (this.isCompleted()) {
+        //box.style.backgroundColor = 'gold';
+        window.removeEventListener('keydown', arguments.callee);
+      }
+    }
+  });
+}
+```
+We are finished! You can compare the vanilla code and the react!
+
+Some links to for futher reading about react,es6  javascript in generale
+
+ - For total programming beginner
+ - For everyone
+ - You should really follow guy like eric elliot
